@@ -16,12 +16,19 @@ const loadItemsIntoReducer = (facade, methods = {}, { PENDING, FULFILLED, REJECT
     [FULFILLED] (state, { payload }) {
       const instance = facade(state).finishLoading()
       Object.keys(methods || {}).map((method) => {
-        const keypath = methods[method]
         if (typeof instance[method] !== 'function') {
           throw new Error(`Facade is missing method ${method}`)
         }
 
-        return instance[method](get(payload, keypath))
+        let arg = null
+        const keypath = methods[method]
+        if (typeof keypath === 'function') {
+          arg = keypath(payload)
+        } else {
+          arg = get(payload, keypath)
+        }
+
+        return instance[method](arg)
       })
       return instance.get()
     },
