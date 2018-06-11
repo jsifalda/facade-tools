@@ -15,7 +15,13 @@
     "type": "git",
     "url": "git+ssh://git@github.com/jsifalda/facade-tools.git"
   },
-  "keywords": ["facade", "tools", "helpers", "create", "facade"],
+  "keywords": [
+    "facade",
+    "tools",
+    "helpers",
+    "create",
+    "facade"
+  ],
   "author": "@jsifalda",
   "license": "MIT",
   "bugs": {
@@ -23,7 +29,8 @@
   },
   "homepage": "https://github.com/jsifalda/facade-tools#readme",
   "dependencies": {
-    "is-nil": "^1.0.1"
+    "is-nil": "^1.0.1",
+    "lodash.get": "^4.4.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
