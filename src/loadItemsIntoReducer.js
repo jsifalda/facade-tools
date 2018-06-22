@@ -13,7 +13,7 @@ const loadItemsIntoReducer = (facade, methods = {}, { PENDING, FULFILLED, REJECT
         .startLoading()
         .get()
     },
-    [FULFILLED] (state, { payload }) {
+    [FULFILLED] (state, action) {
       const instance = facade(state).finishLoading()
       Object.keys(methods || {}).map((method) => {
         if (typeof instance[method] !== 'function') {
@@ -23,8 +23,9 @@ const loadItemsIntoReducer = (facade, methods = {}, { PENDING, FULFILLED, REJECT
         let arg = null
         const keypath = methods[method]
         if (typeof keypath === 'function') {
-          arg = keypath(payload)
+          arg = keypath(action)
         } else {
+          const { payload } = action
           arg = get(payload, keypath)
         }
 
