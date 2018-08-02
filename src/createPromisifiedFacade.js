@@ -1,4 +1,16 @@
+import isNil from 'is-nil'
+
 import createFacade from './createFacade'
+
+const clearPending = (pending, id) => {
+  if (!Array.isArray(pending)) {
+    return []
+  }
+
+  return pending.filter((_id) => {
+    return _id !== id
+  })
+}
 
 const createPromisifiedFacade = (builder, initialState = {}) => {
   initialState = {
@@ -9,12 +21,20 @@ const createPromisifiedFacade = (builder, initialState = {}) => {
   return createFacade((mergeWith) => {
     return {
       ...builder(mergeWith),
-      startLoading() {
-        mergeWith({ pending: true })
+      startLoading(id) {
+        mergeWith(({ pending }) => {
+          return {
+            pending: isNil(id) ? true : [...(!Array.isArray(pending) ? [] : pending), id]
+          }
+        })
         return this
       },
-      finishLoading() {
-        mergeWith({ pending: false })
+      finishLoading(id) {
+        mergeWith(({ pending }) => {
+          return {
+            pending: isNil(id) ? false : clearPending(pending, id)
+          }
+        })
         return this
       }
     }
