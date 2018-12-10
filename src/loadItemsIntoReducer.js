@@ -8,13 +8,20 @@ const defaultActions = {
 
 const loadItemsIntoReducer = (facade, methods = {}, { PENDING, FULFILLED, REJECTED } = defaultActions) => {
   return {
-    [PENDING] (state, { payload }) {
-      return facade(state)
-        .startLoading()
-        .get()
+    [PENDING](state, { payload }) {
+      const instance = facade(state)
+      if (typeof instance.startLoading === 'function') {
+        instance.startLoading()
+      }
+
+      return instance.get()
     },
-    [FULFILLED] (state, action) {
-      const instance = facade(state).finishLoading()
+    [FULFILLED](state, action) {
+      const instance = facade(state)
+      if (typeof instance.finishLoading === 'function') {
+        instance.finishLoading()
+      }
+
       Object.keys(methods || {}).map((method) => {
         if (typeof instance[method] !== 'function') {
           throw new Error(`Facade is missing method ${method}`)
@@ -33,8 +40,12 @@ const loadItemsIntoReducer = (facade, methods = {}, { PENDING, FULFILLED, REJECT
       })
       return instance.get()
     },
-    [REJECTED] (state, { payload }) {
-      const instance = facade(state).finishLoading()
+    [REJECTED](state, { payload }) {
+      const instance = facade(state)
+      if (typeof instance.finishLoading === 'function') {
+        instance.finishLoading()
+      }
+
       Object.keys(methods || {}).map((method) => {
         if (typeof instance[method] !== 'function') {
           throw new Error(`Facade is missing method ${method}`)
